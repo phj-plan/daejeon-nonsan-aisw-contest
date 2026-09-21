@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>중앙시장 AI 탐험대</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4ede2;color:#302820;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+button{font:inherit;cursor:pointer}.wrap{max-width:900px;margin:auto;padding:18px 16px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:900;font-size:18px}.brand small{display:block;color:#786c61;font-size:11px}
+.stamp{background:#302820;color:#fff;padding:9px 13px;border-radius:99px;font-weight:800;white-space:nowrap}
+.stamp.bump{animation:bump .5s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.hero,.panel{background:#fffaf2;border:1px solid #eadfce;border-radius:24px;box-shadow:0 10px 30px #4b321b12}
+.hero{margin-top:16px;padding:28px 22px;background:linear-gradient(135deg,#fffaf2,#f7e3ca)}
+.kicker,.step{font-size:11px;letter-spacing:1.5px;font-weight:900;color:#b45b33}.hero h1{font-size:clamp(32px,7vw,54px);line-height:1.05;margin:9px 0}.hero p{color:#786c61;line-height:1.6}
+.panel{margin-top:16px;padding:20px}.question{display:none}.question.active{display:block}h2{margin:0 0 14px;font-size:21px}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.opt{padding:15px;border:1px solid #eadfce;border-radius:16px;background:#fff;font-weight:800;text-align:left;color:#302820}.opt span{display:block;color:#786c61;font-size:11px;margin-top:4px;font-weight:600}.opt.selected{border:2px solid #b45b33;background:#f8ead9;padding:14px}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:15px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:12px 16px;background:#302820;color:#fff;font-weight:900}.btn.alt{background:#eee2d2;color:#302820}.btn.accent{background:#b45b33}.btn:disabled{opacity:.45;cursor:default}
+.progress{height:6px;background:#eee2d2;border-radius:99px;margin-top:14px;overflow:hidden}.progress i{display:block;height:100%;background:#b45b33;width:20%;transition:width .3s}
+.analysis{display:none}.analysis.show{display:block}.analysisbox{background:#302820;color:#fff;border-radius:20px;padding:20px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.chip{background:#f1dfc9;color:#4b3425;padding:6px 9px;border-radius:99px;font-size:12px;font-weight:800}.reason{color:#eadfce;font-size:14px;line-height:1.6}
+.missions{display:grid;gap:12px}.mission{border:1px solid #eadfce;border-radius:18px;padding:16px;background:#fff;display:flex;flex-direction:column}.mission.done{background:#eef4ee;border-color:#a7b9a8}.missionhead{display:flex;justify-content:space-between;gap:6px}.tag{background:#e8efe8;color:#55705b;border-radius:99px;padding:5px 8px;font-size:11px;font-weight:900}.tag.num{background:#302820;color:#fff}.mission h3{font-size:17px;margin:9px 0 6px}.mission p{font-size:13px;color:#786c61;line-height:1.5;margin:0}.verify{border-top:1px dashed #eadfce;margin-top:auto;padding-top:12px}.mission p+.verify{margin-top:12px}.verify .btn{width:100%}.note{text-align:center;color:#8b7e73;font-size:10px;margin-top:7px}
+.mission .thumb{width:100%;height:110px;object-fit:cover;border-radius:12px;margin-top:10px;display:none}.mission.done .thumb.has{display:block}
+.stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}.stampbox{aspect-ratio:1;border:1px dashed #d6c8b7;border-radius:15px;background:#faf4eb;display:flex;align-items:center;justify-content:center;font-size:24px;opacity:.5}.stampbox.on{opacity:1;background:#fff0d9;border-style:solid}
+.stampbox.new{animation:slotPop .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes slotPop{0%{transform:scale(.2) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.history div{background:#faf4eb;border-radius:10px;padding:9px;margin-top:7px;font-size:12px;color:#62564c}
+.footer{text-align:center;color:#8c7e71;font-size:11px;line-height:1.6;margin-top:22px}
+@media(min-width:700px){.options{grid-template-columns:repeat(4,1fr)}.missions{grid-template-columns:repeat(3,1fr)}}
+
+/* 인증 화면 */
+.verify-screen{display:none;position:fixed;inset:0;background:#f4ede2;z-index:10;overflow:auto;padding:22px 16px}
+.verify-screen.show{display:flex;align-items:flex-start;justify-content:center}
+.verify-card{width:min(560px,100%);background:#fffaf2;border:1px solid #eadfce;border-radius:26px;padding:23px;box-shadow:0 18px 55px #4b321b20;margin:auto 0}
+.verify-card.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+.verify-icon{font-size:45px;margin-top:8px}.verify-card h2{margin:5px 0 6px}.verify-card>p{color:#786c61;font-size:13px;line-height:1.55}
+.verify-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+.verify-method{border:1px solid #eadfce;background:#fff;border-radius:15px;padding:14px 8px;text-align:center;color:#302820}
+.verify-method .ic{font-size:22px}.verify-method b,.verify-method span{display:block}.verify-method b{margin-top:5px;font-size:13px}.verify-method span{font-size:10px;color:#786c61;margin-top:3px}
+.verify-method.selected{border:2px solid #b45b33;background:#f8ead9;padding:13px 7px}
+.evidence{display:none;margin-top:12px;background:#fff;border:1px dashed #d6c8b7;border-radius:14px;padding:14px;text-align:center}
+.evidence.show{display:block}
+.upload-btn{display:inline-block;background:#302820;color:#fff;border-radius:12px;padding:10px 14px;font-weight:900;font-size:13px;cursor:pointer}
+.evidence input[type=file]{display:none}
+.preview{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:10px}
+.preview.show{display:block}
+.ev-status{font-size:12px;color:#786c61;margin-top:8px;line-height:1.5}
+.ev-status.ok{color:#3d7a4a;font-weight:800}.ev-status.bad{color:#b83a2e;font-weight:800}
+.selected-method{margin-top:12px;background:#f6eee3;border-radius:12px;padding:11px;text-align:center;font-size:12px;color:#786c61}
+.verify-actions{display:flex;gap:8px;margin-top:12px}.verify-actions .btn{flex:1}
+.prototype-note{text-align:center;color:#8c7e71;font-size:10px;line-height:1.5;margin-top:11px}
+@media(max-width:500px){.verify-methods{grid-template-columns:1fr}.verify-method{display:grid;grid-template-columns:32px 1fr;text-align:left;align-items:center}.verify-method .ic{grid-row:span 2}.verify-method b{margin-top:0}}
+
+/* 결과 오버레이 (성공 / 실패 / 완주) */
+.overlay{display:none;position:fixed;inset:0;background:#211912cc;z-index:20;align-items:center;justify-content:center;padding:18px}
+.overlay.show{display:flex}
+.result-card{background:#fffaf2;border-radius:26px;padding:28px 22px;max-width:380px;width:100%;text-align:center;animation:cardIn .3s ease}
+@keyframes cardIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.result-card h2{margin:14px 0 6px}.result-card p{color:#786c61;line-height:1.6;font-size:14px;margin:0 0 16px}
+.result-card .btn{width:100%}
+
+/* 도장 찍히는 애니메이션 */
+.seal-area{position:relative;width:170px;height:170px;margin:0 auto}
+.seal{position:absolute;inset:0;border:7px solid #c0392b;border-radius:50%;color:#c0392b;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;transform:rotate(-14deg);background:#fff5f0;box-shadow:inset 0 0 0 4px #fff5f0,inset 0 0 0 7px #c0392b}
+.seal .s1{font-size:44px;line-height:1}.seal .s2{font-size:15px;margin-top:4px;letter-spacing:1px}.seal .s3{font-size:11px;margin-top:2px}
+.overlay.show .seal.stamp-in{animation:stampIn .55s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes stampIn{0%{transform:scale(3) rotate(-40deg);opacity:0}60%{transform:scale(.9) rotate(-12deg);opacity:1}100%{transform:scale(1) rotate(-14deg);opacity:1}}
+.ink{position:absolute;inset:-12px;border-radius:50%;border:3px solid #c0392b55;opacity:0}
+.overlay.show .ink{animation:inkWave .7s .4s ease-out both}
+@keyframes inkWave{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.seal.fail{border-color:#7a6e64;color:#7a6e64;background:#f3eeea;box-shadow:inset 0 0 0 4px #f3eeea,inset 0 0 0 7px #7a6e64}
+.overlay.show .seal.fail{animation:failIn .6s ease both}
+@keyframes failIn{0%{transform:scale(1.4) rotate(0);opacity:0}50%{transform:scale(1) rotate(-14deg);opacity:1}65%{transform:rotate(-20deg)}80%{transform:rotate(-9deg)}100%{transform:rotate(-14deg)}}
+.confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:21;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><div class="brand">🏮 중앙시장 AI 탐험대<small>AI와 함께 발견하고, 즐기고, 다시 찾는 시장</small></div><div class="stamp" id="countPill">🏮 <span id="count">0</span>/5</div></div>
+
+<section class="hero"><div class="kicker">AI MARKET QUEST · PROTOTYPE</div><h1>오늘 시장에서<br>뭐 해볼까유?</h1><p>동행·시간·예산·취향을 분석해서 오늘의 탐험 미션 5개를 만들어드려유.</p></section>
+
+<section class="panel" id="planner"><div class="step" id="stepLabel">STEP 1 / 5</div>
+<div class="question active" data-n="0"><h2>오늘 누구랑 왔어유?</h2><div class="options">
+<button class="opt" data-k="party" data-v="데이트">💕 데이트<span>둘이 천천히</span></button><button class="opt" data-k="party" data-v="친구">👯 친구랑<span>재미있게</span></button><button class="opt" data-k="party" data-v="가족">👨‍👩‍👧 가족이랑<span>편하게</span></button><button class="opt" data-k="party" data-v="혼자">🙋 혼자<span>내 취향대로</span></button></div></div>
+<div class="question" data-n="1"><h2>얼마나 머무를 예정이야?</h2><div class="options">
+<button class="opt" data-k="time" data-v="30분">⏱️ 30분<span>핵심만</span></button><button class="opt" data-k="time" data-v="1시간">🕐 1시간<span>가볍게</span></button><button class="opt" data-k="time" data-v="2시간">🕑 2시간<span>여유롭게</span></button><button class="opt" data-k="time" data-v="2시간 이상">🌙 2시간 이상<span>깊게</span></button></div></div>
+<div class="question" data-n="2"><h2>오늘 예산은 어느 정도야?</h2><div class="options">
+<button class="opt" data-k="budget" data-v="5천원 이하">💰 5천원 이하<span>알뜰하게</span></button><button class="opt" data-k="budget" data-v="1만원 이하">💵 1만원 이하<span>가볍게</span></button><button class="opt" data-k="budget" data-v="2만원 이하">💳 2만원 이하<span>먹거리+구경</span></button><button class="opt" data-k="budget" data-v="상관없음">✨ 상관없음<span>취향 우선</span></button></div></div>
+<div class="question" data-n="3"><h2>오늘 제일 하고 싶은 건?</h2><div class="options">
+<button class="opt" data-k="goal" data-v="먹거리">🍡 먹거리<span>맛있는 것</span></button><button class="opt" data-k="goal" data-v="사진·구경">📸 사진·구경<span>볼거리</span></button><button class="opt" data-k="goal" data-v="쇼핑">🛍️ 쇼핑<span>상품 찾기</span></button><button class="opt" data-k="goal" data-v="새로운 곳 발견">🧭 새로운 곳 발견<span>숨은 재미</span></button></div></div>
+<div class="question" data-n="4"><h2>어떤 방식으로 탐험할래유?</h2><div class="options">
+<button class="opt" data-k="style" data-v="편하게">🌿 편하게<span>여유롭게</span></button><button class="opt" data-k="style" data-v="알차게">⚡ 알차게<span>다양하게</span></button><button class="opt" data-k="style" data-v="새로운 곳 위주">🧭 새로운 곳 위주<span>처음 가는 곳</span></button><button class="opt" data-k="style" data-v="랜덤">🎲 랜덤<span>AI에게 맡기기</span></button></div></div>
+<div class="nav"><button class="btn alt" id="prev" disabled>← 이전</button><button class="btn" id="next" disabled>다음 →</button></div><div class="progress"><i id="prog"></i></div></section>
+
+<section class="panel analysis" id="analysis"><div class="step">AI EXPLORATION ANALYSIS</div><div class="analysisbox"><h2 id="analysisTitle" style="color:#fff">탐험 성향을 분석했어유.</h2><div class="chips" id="chips"></div><div class="reason" id="reason"></div></div><div class="nav"><button class="btn alt" id="edit">조건 다시 고르기</button><button class="btn accent" id="make">🎯 새 탐험 만들기</button></div></section>
+
+<section class="panel" id="quest" style="display:none"><div class="step">TODAY'S QUEST · 미션 5개</div><h2 id="qtitle">오늘의 탐험</h2><p id="qsub" style="color:#786c61;font-size:13px"></p><div class="missions" id="missions"></div><div class="nav"><button class="btn alt" id="another">🎲 다른 탐험 생성</button></div></section>
+
+<section class="panel"><div class="step">MY STAMP BOOK</div><h2>나의 탐험 도장판</h2><div id="level" style="font-weight:900">🌱 시장 새싹</div><div id="leveltext" style="font-size:12px;color:#786c61;margin-top:4px"></div><div class="stamps" id="stamps"></div><div class="history" id="historyList"></div><div class="nav"><button class="btn alt" id="resetBtn" style="display:none">🔄 새 도장판 시작하기</button></div></section>
+<section class="panel"><div class="step">WHY THIS SERVICE?</div><h2>시장 곳곳을 탐험하게 만드는 방법</h2><p style="color:#786c61;line-height:1.7;margin:0">완료한 미션은 기억해서 다음 탐험에서 제외하고, 사진·QR 업로드나 위치 확인이 성공한 경우에만 도장을 지급하는 구조예유. 인증 자료가 없으면 도장이 찍히지 않아유.</p></section>
+<div class="footer">대회 제출용 프로토타입 · 실제 QR/위치/사진 인증 및 쿠폰은 운영 단계에서 참여 점포·상인회와 연동</div></div>
+
+<!-- 방문 인증 화면 -->
+<div class="verify-screen" id="verifyScreen">
+  <div class="verify-card" id="verifyCard">
+    <div class="step">VISIT VERIFICATION</div>
+    <div class="verify-icon">📍</div>
+    <h2 id="verifyTitle">방문 인증하기</h2>
+    <p id="verifyDesc">미션을 수행한 뒤 인증 방법을 선택해 주세요.</p>
+    <div class="verify-methods">
+      <button class="verify-method" data-method="QR"><div class="ic">▣</div><b>QR 인증</b><span>매장 QR을 촬영·업로드</span></button>
+      <button class="verify-method" data-method="사진"><div class="ic">📷</div><b>사진 인증</b><span>미션 인증 사진 업로드</span></button>
+      <button class="verify-method" data-method="위치"><div class="ic">📍</div><b>위치 인증</b><span>시장 반경 안인지 확인</span></button>
+    </div>
+
+    <!-- 사진/QR 업로드 영역 -->
+    <div class="evidence" id="evFile">
+      <label class="upload-btn" for="fileInput" id="uploadLabel">📷 사진 촬영 / 업로드</label>
+      <input type="file" id="fileInput" accept="image/*" capture="environment">
+      <img class="preview" id="preview" alt="업로드한 인증 사진 미리보기">
+      <div class="ev-status" id="fileStatus">아직 업로드한 사진이 없어요.</div>
+    </div>
+    <!-- 위치 확인 영역 -->
+    <div class="evidence" id="evGeo">
+      <button class="upload-btn" id="geoBtn" style="border:0">📡 내 위치 확인하기</button>
+      <div class="ev-status" id="geoStatus">아직 위치를 확인하지 않았어요.</div>
+    </div>
+
+    <div class="selected-method" id="selectedMethod">인증 방법을 선택해 주세요.</div>
+    <div class="verify-actions">
+      <button class="btn alt" id="verifyCancel">돌아가기</button>
+      <button class="btn accent" id="verifyConfirm" disabled>인증 확인하기</button>
+    </div>
+    <div class="prototype-note">※ 사진·QR은 이미지 업로드가 있어야, 위치는 중앙시장 반경 안이어야 도장이 지급됩니다.</div>
+  </div>
+</div>
+
+<!-- 결과 오버레이 -->
+<div class="overlay" id="overlay">
+  <div class="result-card">
+    <div class="seal-area"><div class="ink" id="ink"></div><div class="seal" id="seal"><div class="s1" id="sealIcon">🏮</div><div class="s2" id="sealText">인증 완료</div><div class="s3">중앙시장 탐험대</div></div></div>
+    <h2 id="resultTitle">도장 획득!</h2>
+    <p id="resultDesc"></p>
+    <button class="btn accent" id="resultBtn">확인</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 저장소 (localStorage 막힌 환경에서도 동작) ---------- */
+function loadState(){
+  try{const raw=localStorage.getItem("marketQuest");if(raw)return JSON.parse(raw)}catch(e){}
+  return {stamps:0,done:[],history:[]};
+}
+const S=loadState(),A={};let step=0,seed=0;
+const GOAL=5;               // 도장판 칸 수 = 한 번에 보여줄 미션 수
+const MARKET={lat:36.3289,lng:127.4291}; // 대전 중앙시장 대략 좌표
+const RADIUS=700;           // 허용 반경(m)
+const $=id=>document.getElementById(id);
+
+const M=[
+["m1","먹거리","3,000원 이하 간식 찾아보기","예산 안에서 시장 간식을 하나 발견하고 가격을 확인해봐유.",["5천원 이하","먹거리"]],
+["m2","먹거리","처음 보는 메뉴 하나 발견하기","평소에 먹어보지 않았던 메뉴를 찾아 기록해봐유.",["새로운 곳 발견","먹거리"]],
+["m3","먹거리","오늘의 간식 후보 2곳 비교하기","두 곳의 메뉴와 가격을 비교해봐유.",["먹거리","쇼핑"]],
+["m4","사진","시장 안에서 가장 마음에 드는 장면 찾기","오늘 기억하고 싶은 풍경을 사진으로 남겨봐유.",["사진·구경"]],
+["m5","사진","시장 간판 하나 골라 사진 남기기","개성 있는 간판이나 시장 풍경을 찾아봐유.",["사진·구경","새로운 곳 발견"]],
+["m6","사진","같이 온 사람과 인증샷 남기기","오늘 탐험을 함께한 사람과 한 장 남겨봐유.",["데이트","친구","가족","사진·구경"]],
+["m7","발견","처음 가보는 골목 하나 탐험하기","평소 지나치던 길 말고 새로운 골목을 찾아봐유.",["새로운 곳 발견","랜덤"]],
+["m8","발견","AI가 고른 숨은 재미 찾기","평소 눈여겨보지 않던 공간을 하나 발견해봐유.",["새로운 곳 발견","랜덤"]],
+["m9","쇼핑","오늘 필요한 물건 한 가지 찾아보기","시장 안에서 필요한 물건 하나를 찾아봐유.",["쇼핑"]],
+["m10","쇼핑","두 점포의 상품 비교하기","비슷한 상품을 두 곳에서 비교해봐유.",["쇼핑","알차게"]],
+["m11","발견","마음에 드는 점포 하나 기억하기","다음에 다시 오고 싶은 곳을 하나 골라봐유.",["재방문","편하게"]],
+["m12","먹거리","추천하고 싶은 먹거리 하나 고르기","친구나 가족에게 추천하고 싶은 메뉴를 골라봐유.",["먹거리","가족","친구"]],
+["m13","발견","오늘 처음 알게 된 사실 하나 기록하기","시장에 대해 새롭게 알게 된 점을 적어봐유.",["새로운 곳 발견"]],
+["m14","사진","오늘의 탐험 인증 사진 남기기","미션 장소에서 탐험 인증 사진을 남겨봐유.",["사진·구경","재방문"]],
+["m15","발견","다음 방문 때 갈 곳 하나 찜하기","오늘 못 가본 곳 중 다시 올 곳을 정해봐유.",["재방문","편하게"]]
+];
+
+function save(newSlot){
+  try{localStorage.setItem("marketQuest",JSON.stringify(S))}catch(e){}
+  draw(newSlot);
+}
+function draw(newSlot){
+  const n=Math.min(S.stamps,GOAL);
+  $("count").textContent=n;
+  const box=$("stamps");box.innerHTML="";
+  for(let i=0;i<GOAL;i++){
+    const d=document.createElement("div");
+    d.className="stampbox"+(i<n?" on":"")+(i===newSlot?" new":"");
+    d.textContent=i<n?"🏮":"○";
+    box.append(d);
+  }
+  $("level").textContent=n>=GOAL?"🏆 중앙시장 마스터":n>=3?"🥟 시장 탐험가":"🌱 시장 새싹";
+  $("leveltext").textContent=n>=GOAL?"5개 도장 달성! 참여 매장 혜택 단계로 연결할 수 있어유.":n+"/5 도장 · "+(GOAL-n)+"개 더 모아봐유.";
+  $("historyList").innerHTML=S.history.slice(-5).reverse().map(x=>"<div>🏮 "+x+"</div>").join("");
+  $("resetBtn").style.display=n>=GOAL?"inline-block":"none";
+}
+
+/* ---------- 질문 단계 ---------- */
+document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const k=b.dataset.k;
+  document.querySelectorAll('.opt[data-k="'+k+'"]').forEach(x=>x.classList.remove("selected"));
+  b.classList.add("selected");A[k]=b.dataset.v;$("next").disabled=false;
+});
+function show(n){
+  step=n;
+  document.querySelectorAll(".question").forEach(q=>q.classList.toggle("active",+q.dataset.n===n));
+  $("stepLabel").textContent="STEP "+(n+1)+" / 5";
+  $("prog").style.width=((n+1)*20)+"%";
+  $("prev").disabled=n===0;
+  $("next").disabled=!A[["party","time","budget","goal","style"][n]];
+  $("next").textContent=n===4?"분석하기 →":"다음 →";
+}
+$("next").onclick=()=>step<4?show(step+1):analyze();
+$("prev").onclick=()=>show(step-1);
+
+function analyze(){
+  $("planner").style.display="none";$("analysis").classList.add("show");
+  $("chips").innerHTML=Object.values(A).map(x=>"<span class=chip>"+x+"</span>").join("");
+  const r=A.style==="새로운 곳 위주"||A.goal==="새로운 곳 발견"?"새로운 발견을 우선하고 이미 완료한 미션은 제외해서 탐험을 구성했어유."
+    :A.goal==="먹거리"?"먹거리 경험을 중심으로 예산과 체류시간을 고려했어유."
+    :A.goal==="사진·구경"?"사진과 구경 비중을 높여 이동 부담이 적게 구성했어유."
+    :"동행·시간·예산·취향을 종합해서 다양한 미션을 섞었어유.";
+  $("reason").textContent=r;
+  $("analysisTitle").textContent="🤖 "+A.party+" + "+A.time+" + "+A.budget+" 탐험 분석 완료";
+  makeQuest();
+}
+$("edit").onclick=()=>{$("analysis").classList.remove("show");$("planner").style.display="block";show(0)};
+$("make").onclick=makeQuest;$("another").onclick=makeQuest;
+
+/* ---------- 미션 5개 생성 ---------- */
+function makeQuest(){
+  seed++;
+  const pool=M.filter(x=>!S.done.includes(x[0])).map(x=>({x,s:
+    Math.random()*10
+    +(x[4].includes(A.goal)?25:0)
+    +(x[4].includes(A.party)?10:0)
+    +(x[4].includes(A.style)?8:0)
+    +(x[4].includes("새로운 곳 발견")&&(A.style==="새로운 곳 위주"||A.goal==="새로운 곳 발견")?15:0)
+    +(A.budget==="5천원 이하"&&x[0]==="m1"?20:0)
+  })).sort((a,b)=>b.s-a.s);
+
+  // 같은 카테고리는 최대 2개까지 → 다양하게 5개
+  let chosen=[];
+  for(const z of pool){
+    if(chosen.length>=GOAL)break;
+    if(chosen.filter(y=>y.x[1]===z.x[1]).length<2)chosen.push(z);
+  }
+  // 5개가 안 채워지면 남은 것에서 보충
+  for(const z of pool){
+    if(chosen.length>=GOAL)break;
+    if(!chosen.includes(z))chosen.push(z);
+  }
+
+  $("qtitle").textContent=["오늘은 발견형 탐험이에유","오늘은 알차게 한 바퀴","오늘은 숨은 재미 찾기","오늘은 가볍게 즐기기"][seed%4];
+  $("qsub").textContent=Object.values(A).join(" · ")+" 기준 · 완료 미션 "+S.done.length+"개 제외 · 미션 "+chosen.length+"개";
+  const box=$("missions");box.innerHTML="";
+  if(chosen.length===0){
+    box.innerHTML='<div class="mission"><h3>🎉 모든 미션을 완료했어유!</h3><p>도장판 아래 "새 도장판 시작하기"로 다시 도전할 수 있어유.</p></div>';
+  }
+  chosen.forEach((z,i)=>{
+    const x=z.x,d=document.createElement("div");
+    d.className="mission";
+    d.innerHTML='<div class=missionhead><span class="tag num">미션 '+(i+1)+'</span><span class=tag>'+x[1]+' · AI 추천</span></div><h3>'+x[2]+'</h3><p>'+x[3]+'</p><img class=thumb alt="인증 사진"><div class=verify><button class="btn accent">📍 방문 인증하고 도장 받기</button><div class=note>사진·QR 업로드 또는 위치 확인이 필요해요</div></div>';
+    d.querySelector("button").onclick=()=>verify(x,d);
+    box.append(d);
+  });
+  $("quest").style.display="block";
+  $("quest").scrollIntoView({behavior:"smooth"});
+}
+
+/* ---------- 인증 ---------- */
+let verifyTarget=null,selectedMethod=null,uploadedImg=null,geoOk=false;
+
+function resetEvidence(){
+  uploadedImg=null;geoOk=false;
+  $("fileInput").value="";
+  $("preview").classList.remove("show");$("preview").removeAttribute("src");
+  $("fileStatus").textContent="아직 업로드한 사진이 없어요.";$("fileStatus").className="ev-status";
+  $("geoStatus").textContent="아직 위치를 확인하지 않았어요.";$("geoStatus").className="ev-status";
+  $("evFile").classList.remove("show");$("evGeo").classList.remove("show");
+}
+function verify(x,d){
+  if(S.stamps>=GOAL){openResult("full");return}
+  verifyTarget={x,d};selectedMethod=null;resetEvidence();
+  $("verifyTitle").textContent="「"+x[2]+"」 방문 인증";
+  $("verifyDesc").textContent="미션을 수행한 뒤 인증 방법을 선택하고, 인증 자료를 올려 주세요.";
+  document.querySelectorAll(".verify-method").forEach(b=>b.classList.remove("selected"));
+  $("selectedMethod").textContent="인증 방법을 선택해 주세요.";
+  $("verifyConfirm").disabled=true;
+  $("verifyScreen").classList.add("show");
+}
+document.querySelectorAll(".verify-method").forEach(b=>b.onclick=()=>{
+  selectedMethod=b.dataset.method;
+  document.querySelectorAll(".verify-method").forEach(x=>x.classList.remove("selected"));
+  b.classList.add("selected");
+  $("selectedMethod").textContent="선택한 인증: "+selectedMethod+" 인증";
+  const isFile=selectedMethod!=="위치";
+  $("evFile").classList.toggle("show",isFile);
+  $("evGeo").classList.toggle("show",!isFile);
+  $("uploadLabel").textContent=selectedMethod==="QR"?"▣ 매장 QR 촬영 / 업로드":"📷 사진 촬영 / 업로드";
+  $("verifyConfirm").disabled=false; // 누를 수는 있지만, 자료 없으면 실패 처리
+});
+
+// 사진/QR 업로드
+$("fileInput").onchange=e=>{
+  const f=e.target.files&&e.target.files[0];
+  if(!f){uploadedImg=null;return}
+  if(!f.type.startsWith("image/")){
+    uploadedImg=null;
+    $("fileStatus").textContent="이미지 파일만 올릴 수 있어요.";$("fileStatus").className="ev-status bad";
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    uploadedImg=reader.result;
+    $("preview").src=uploadedImg;$("preview").classList.add("show");
+    $("fileStatus").textContent="✅ 업로드 완료: "+f.name;$("fileStatus").className="ev-status ok";
+  };
+  reader.readAsDataURL(f);
+};
+
+// 위치 확인
+function distance(a,b,c,d){
+  const R=6371000,r=Math.PI/180,dLat=(c-a)*r,dLng=(d-b)*r;
+  const h=Math.sin(dLat/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+$("geoBtn").onclick=()=>{
+  geoOk=false;
+  if(!navigator.geolocation){
+    $("geoStatus").textContent="이 기기(브라우저)에서는 위치 확인을 지원하지 않아요.";$("geoStatus").className="ev-status bad";return;
+  }
+  $("geoStatus").textContent="위치를 확인하는 중…";$("geoStatus").className="ev-status";
+  navigator.geolocation.getCurrentPosition(p=>{
+    const m=Math.round(distance(p.coords.latitude,p.coords.longitude,MARKET.lat,MARKET.lng));
+    geoOk=m<=RADIUS;
+    $("geoStatus").textContent=geoOk?"✅ 중앙시장 안에 있어요 (약 "+m+"m)":"❌ 중앙시장에서 약 "+(m>=1000?(m/1000).toFixed(1)+"km":m+"m")+" 떨어져 있어요.";
+    $("geoStatus").className="ev-status "+(geoOk?"ok":"bad");
+  },()=>{
+    $("geoStatus").textContent="❌ 위치 권한이 거부되었거나 확인할 수 없어요.";$("geoStatus").className="ev-status bad";
+  },{enableHighAccuracy:true,timeout:10000});
+};
+
+$("verifyCancel").onclick=()=>{$("verifyScreen").classList.remove("show");verifyTarget=null};
+
+$("verifyConfirm").onclick=()=>{
+  if(!verifyTarget||!selectedMethod)return;
+  const x=verifyTarget.x,d=verifyTarget.d;
+  if(S.done.includes(x[0]))return;
+
+  // ★ 핵심: 인증 자료 검사
+  let failMsg="";
+  if(selectedMethod==="위치"){
+    if(!geoOk)failMsg="중앙시장 안에서 위치 확인에 성공해야 도장을 받을 수 있어유.";
+  }else if(!uploadedImg){
+    failMsg=(selectedMethod==="QR"?"매장 QR 사진":"미션 인증 사진")+"을 업로드하지 않았어유. 사진을 올린 뒤 다시 시도해 주세요.";
+  }
+  if(failMsg){
+    const card=$("verifyCard");
+    card.classList.remove("shake");void card.offsetWidth;card.classList.add("shake");
+    openResult("fail",failMsg);
+    return;
+  }
+
+  // 성공 처리
+  S.done.push(x[0]);S.stamps++;S.history.push(x[2]+" ("+selectedMethod+" 인증)");
+  const slot=S.stamps-1;
+  d.classList.add("done");
+  if(uploadedImg){const t=d.querySelector(".thumb");t.src=uploadedImg;t.classList.add("has")}
+  const b=d.querySelector(".verify .btn");
+  b.disabled=true;b.textContent="✅ 방문 인증 완료 · 도장 획득";
+  $("verifyScreen").classList.remove("show");
+  verifyTarget=null;
+  save(slot);
+  const pill=$("countPill");pill.classList.remove("bump");void pill.offsetWidth;pill.classList.add("bump");
+  openResult(S.stamps>=GOAL?"master":"success",x[2]);
+};
+
+/* ---------- 결과 오버레이 (도장 애니메이션) ---------- */
+function openResult(type,text){
+  const seal=$("seal");
+  seal.className="seal";void seal.offsetWidth; // 애니메이션 재시작
+  if(type==="fail"){
+    seal.classList.add("fail");
+    $("sealIcon").textContent="✖";$("sealText").textContent="인증 실패";
+    $("resultTitle").textContent="도장 받기 실패";
+    $("resultDesc").textContent=text;
+    $("resultBtn").textContent="다시 인증하기";
+    $("ink").style.display="none";
+  }else if(type==="full"){
+    seal.classList.add("stamp-in");
+    $("sealIcon").textContent="🏆";$("sealText").textContent="도장판 완성";
+    $("resultTitle").textContent="이미 5개를 모두 모았어유!";
+    $("resultDesc").textContent="도장판 아래 '새 도장판 시작하기'를 누르면 다시 모을 수 있어유.";
+    $("resultBtn").textContent="확인";
+    $("ink").style.display="block";
+  }else{
+    seal.classList.add("stamp-in");
+    $("ink").style.display="block";
+    $("sealIcon").textContent=type==="master"?"🏆":"🏮";
+    $("sealText").textContent=type==="master"?"탐험 완주":"인증 완료";
+    $("resultTitle").textContent=type==="master"?"🎉 도장 5개 완성! 중앙시장 마스터":"도장 획득! ("+Math.min(S.stamps,GOAL)+"/5)";
+    $("resultDesc").textContent=type==="master"?"모든 미션을 완료했어유. 참여 매장 혜택을 받을 수 있는 단계예유.":"「"+text+"」 미션 완료! "+(GOAL-S.stamps)+"개만 더 모으면 마스터예유.";
+    $("resultBtn").textContent="계속 탐험하기";
+    if(type==="master")confetti();
+  }
+  const ov=$("overlay");ov.classList.remove("show");void ov.offsetWidth;ov.classList.add("show");
+  $("overlay").dataset.type=type;
+}
+$("resultBtn").onclick=()=>{
+  $("overlay").classList.remove("show");
+  // 실패면 인증 화면을 그대로 유지해서 바로 다시 업로드 가능
+};
+function confetti(){
+  const colors=["#b45b33","#c0392b","#f1c40f","#55705b","#302820"];
+  for(let i=0;i<60;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(1.8+Math.random()*1.6)+"s";
+    c.style.animationDelay=(Math.random()*.5)+"s";
+    document.body.append(c);
+    setTimeout(()=>c.remove(),4200);
+  }
+}
+
+$("resetBtn").onclick=()=>{
+  S.stamps=0;S.done=[];S.history=[];save();
+  if(Object.keys(A).length===5)makeQuest();
+};
+
+draw();show(0);
+</script>
+</body></html>
