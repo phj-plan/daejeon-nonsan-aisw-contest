@@ -2,13 +2,15 @@
 
 # 🏮 중앙시장 AI 탐험대
 
-**지역 활성화 아이디어 콘텐츠** 부문 · 대전·논산 AI·SW 활용 콘텐츠 경진대회 · 팀 시장에가면 (팀원과 공동 제작 · Claude 활용 개발 담당)
+**지역 활성화 아이디어 콘텐츠** 부문 · 대전·논산 로컬상권 AI·SW 디지털 콘텐츠 경진대회 · 팀 시장에가면 (팀원과 공동 제작 · Claude 활용 개발 담당)
 
 🏆 **본선 진출** (2026.09.28 발표) — 예선 142팀 중 18팀, 지역 활성화 아이디어 부문 4팀에 선정
 
 > 방문객의 동행·시간·예산·취향을 분석해 **대전 중앙시장 맞춤 탐험 미션 5개**를 만들고, **방문 인증에 성공해야만 도장을 주는** 모바일 웹 프로토타입
 
 **🔗 Live Demo:** https://jungang-market-ai-explorer.netlify.app/
+
+**📑 본선 발표 자료:** [presentation/jungang-market-ai-explorer-finals.pdf](presentation/jungang-market-ai-explorer-finals.pdf)
 
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
@@ -133,4 +135,4 @@ regional-idea/
 
 ---
 
-<sub>대전·논산 AI·SW 활용 콘텐츠 경진대회 지역 활성화 아이디어 콘텐츠 부문 제출용 프로토타입입니다. 실제 QR/위치/사진 인증 및 쿠폰은 운영 단계에서 참여 점포·상인회와 연동하는 것을 전제로 합니다.</sub>
+<sub>대전·논산 로컬상권 AI·SW 디지털 콘텐츠 경진대회 지역 활성화 아이디어 콘텐츠 부문 제출용 프로토타입입니다. 실제 QR/위치/사진 인증 및 쿠폰은 운영 단계에서 참여 점포·상인회와 연동하는 것을 전제로 합니다.</sub>
