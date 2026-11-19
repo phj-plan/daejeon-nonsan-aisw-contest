@@ -8,6 +8,8 @@
 
 <img src="../docs/award-excellence.jpg" width="360">
 
+🔎 **수상 근거:** [건양대학교 SW중심대학사업단 「사업단소식」 (2026.09.30.)](https://kyusw.konyang.ac.kr/cop/bbs/BBSMSTR_000000002142/selectBoardArticle.do?nttId=294485) · [세종의소리 보도 (2026.10.)](https://www.sjsori.com/news/articleView.html?idxno=89086)
+
 > 방문객의 동행·시간·예산·취향을 분석해 **대전 중앙시장 맞춤 탐험 미션 5개**를 만들고, **방문 인증에 성공해야만 도장을 주는** 모바일 웹 프로토타입
 
 **🔗 Live Demo:** https://jungang-market-ai-explorer.netlify.app/

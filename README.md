@@ -32,6 +32,7 @@
 - 예선 **142팀** 중 4개 부문 합계 **18팀**이 본선 진출 (지역 활성화 아이디어 부문은 4팀)
 - 본선: 2026.09.30. 건양사이버대학교 희영국제홀, 팀별 5분 발표 + 질의응답 → **우수상 (건양대학교 총장상)** 수상
 - 📑 본선 발표 자료: [`regional-idea/presentation/jungang-market-ai-explorer-finals.pdf`](regional-idea/presentation/jungang-market-ai-explorer-finals.pdf)
+- 🔎 수상 근거: [건양대학교 SW중심대학사업단 「사업단소식」 (2026.09.30.)](https://kyusw.konyang.ac.kr/cop/bbs/BBSMSTR_000000002142/selectBoardArticle.do?nttId=294485) · [세종의소리 보도 (2026.10.)](https://www.sjsori.com/news/articleView.html?idxno=89086) — 우수상 '시장에가면'(상권 탐험 서비스)
 
 | 본선 발표 | 우수상 수상 |
 |:---:|:---:|
