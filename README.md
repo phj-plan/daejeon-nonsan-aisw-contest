@@ -2,17 +2,17 @@
 
 > **대전 중앙시장**을 주제로 AI 캐릭터 · AI 노래 · 지역 활성화 아이디어 3개 부문에 참가한 팀 프로젝트
 
-🏆 **본선 진출** — 지역 활성화 아이디어 콘텐츠 부문 「중앙시장 AI 탐험대」 (예선 142팀 중 18팀, 해당 부문 4팀) · 본선 발표 및 시상식 2026.09.30.
+🏆 **우수상 (건양대학교 총장상)** — 지역 활성화 아이디어 콘텐츠 부문 「중앙시장 AI 탐험대」 (예선 142팀 중 본선 18팀, 해당 부문 4팀) · 본선 발표 및 시상식 2026.09.30.
 
 | 부문 | 작품 | 제작 | 결과 | 자세히 |
 |---|---|---|---|---|
-| 🏮 지역 활성화 아이디어 콘텐츠 | 중앙시장 AI 탐험대 (모바일 웹) | 공동 제작 (Claude 활용 개발 담당) | **🏆 본선 진출** | [regional-idea](regional-idea/) · [Live Demo](https://jungang-market-ai-explorer.netlify.app/) |
+| 🏮 지역 활성화 아이디어 콘텐츠 | 중앙시장 AI 탐험대 (모바일 웹) | 공동 제작 (Claude 활용 개발 담당) | **🏆 우수상** (건양대학교 총장상) | [regional-idea](regional-idea/) · [Live Demo](https://jungang-market-ai-explorer.netlify.app/) |
 | 🚂 AI 캐릭터·브랜딩 콘텐츠 | 마스코트 「첫차」 | 전체 직접 제작 | 예선 | [character-branding](character-branding/) |
 | 🎵 AI 활용 노래·음원 콘텐츠 | 「대전 중앙시장 다 있슈~」 | 팀원 제작 | 예선 | [ai-song](ai-song/) |
 
 ---
 
-## 🏮 지역 활성화 아이디어 콘텐츠 — 중앙시장 AI 탐험대 🏆 본선 진출
+## 🏮 지역 활성화 아이디어 콘텐츠 — 중앙시장 AI 탐험대 🏆 우수상
 
 > 방문객의 동행·시간·예산·취향을 분석해 **대전 중앙시장 맞춤 탐험 미션 5개**를 만들고, **방문 인증에 성공해야만 도장을 주는** 모바일 웹 프로토타입
 
@@ -27,13 +27,21 @@
 - 외부 라이브러리 없는 HTML 파일 하나로 구현, ChatGPT·Claude를 개발 도구로 활용
 - 팀원과 공동 제작 — **Claude를 활용한 코드 리뷰·버그 수정·기능 보완·배포본 검증은 직접 담당**
 
-### 본선 진출
+### 본선 결과 — 🏆 우수상 (건양대학교 총장상)
 
 - 예선 **142팀** 중 4개 부문 합계 **18팀**이 본선 진출 (지역 활성화 아이디어 부문은 4팀)
-- 본선: 2026.09.30. 팀별 5분 발표 + 질의응답, 최종 순위는 본선 발표평가 점수로 결정
+- 본선: 2026.09.30. 건양사이버대학교 희영국제홀, 팀별 5분 발표 + 질의응답 → **우수상 (건양대학교 총장상)** 수상
 - 📑 본선 발표 자료: [`regional-idea/presentation/jungang-market-ai-explorer-finals.pdf`](regional-idea/presentation/jungang-market-ai-explorer-finals.pdf)
 
+| 본선 발표 | 우수상 수상 |
+|:---:|:---:|
+| <img src="docs/finals-presentation.jpg" width="300"> | <img src="docs/award-excellence.jpg" width="400"> |
+
+<details><summary>본선 진출팀 발표 (2026.09.28)</summary>
+
 <img src="docs/finalist-announcement.png" width="360">
+
+</details>
 
 👉 [기획 배경, 핵심 로직, 트러블슈팅 보기](regional-idea/README.md)
 
@@ -80,11 +88,13 @@
 ```
 daejeon-nonsan-aisw-contest/
 ├── README.md               # 대회 개요 (이 문서)
-├── docs/                   # 대회 포스터, 본선 진출팀 발표, 본선 안내문
+├── docs/                   # 대회 포스터, 본선 진출팀 발표, 본선 안내문, 본선 발표·수상 사진
+│   ├── award-excellence.jpg
 │   ├── contest-poster.png
 │   ├── finalist-announcement.png
-│   └── finals-guide.pdf
-├── regional-idea/          # 지역 활성화 아이디어 — 중앙시장 AI 탐험대 (본선 진출)
+│   ├── finals-guide.pdf
+│   └── finals-presentation.jpg
+├── regional-idea/          # 지역 활성화 아이디어 — 중앙시장 AI 탐험대 (우수상)
 │   ├── README.md
 │   ├── index.html
 │   ├── PROMPT.md
